@@ -362,9 +362,9 @@ All EDA scripts used for SQL reporting are stored in the `report` folder.
 
 ![alt text](docs/my_notes/eda_steps_analysis.svg)
 
-* Script Purpose:
+* Script `00_init_database.sql` Purpose:
     This script creates a new database named '${database_name}Analytics' if it doesn't already exist.
-    It then creates one schema within the database called 'gold'.
+    It then creates one schema within the database called 'gold'. Some minor cleaning steps are applied to fix typos in the raw data, and label all products as 'Uncategorized' if they are missing category data.
 
 * WARNING:
     Running this script might require you to manually drop the database if it exists due to PostgreSQL's 
@@ -375,7 +375,7 @@ All EDA scripts used for SQL reporting are stored in the `report` folder.
 psql -f report/2_eda_scripts/00_init_database.sql
 ```
 
-* Script Purpose:
+* Script `01_database_exploration.sql` Purpose:
     - To explore the structure of the database, including the list of tables, their column information, and relationships. It also prints a description of all three tables in the gold schema (the only schema). 
 
 * What this script prints to shell:
@@ -389,7 +389,28 @@ psql -f report/2_eda_scripts/00_init_database.sql
 psql ${database_name}Analytics -f report/2_eda_scripts/01_database_exploration.sql
 ```
 
-* Script Purpose:
+Below is an example of the information printed to shell about the table `gold.fact_sales`. This step builds enough familiarity with the database to allow for dimensionality exploration in the next step. 
+
+``` bash
+                         Table "gold.fact_sales"
+    Column     |          Type          | Collation | Nullable | Default 
+---------------+------------------------+-----------+----------+---------
+ order_number  | character varying(255) |           |          | 
+ product_key   | integer                |           |          | 
+ customer_key  | integer                |           |          | 
+ customer_id   | integer                |           |          | 
+ order_date    | date                   |           |          | 
+ shipping_date | date                   |           |          | 
+ due_date      | date                   |           |          | 
+ sales_amount  | numeric                |           |          | 
+ quantity      | integer                |           |          | 
+ price         | numeric                |           |          | 
+Foreign-key constraints:
+    "fact_sales_customer_key_fkey" FOREIGN KEY (customer_key) REFERENCES gold.dim_customers(customer_key)
+    "fact_sales_product_key_fkey" FOREIGN KEY (product_key) REFERENCES gold.dim_products(product_key)
+```
+
+* Script `02_dimensions_exploration` Purpose:
     - To explore the structure of dimension tables. 
 
 SQL Functions Used:
