@@ -21,7 +21,7 @@ dataset/
 
 ## 🗄️ Tables
 
-### ➡️ 1. Customer Information (`Customer Info`)
+### ➡️ 1. Customer Information (`source_crm/cust_info.csv`)
 
 This table stores core information about customers.
 
@@ -35,7 +35,7 @@ This table stores core information about customers.
 | `cst_gndr`        | VARCHAR(10)  | Customer's gender.                             |
 | `cst_create_date` | DATETIME     | Date and time when the customer record was created.|
 
-### ➡️ 2. Product Information (`Product Info`)
+### ➡️ 2. Product Information (`source_crm/prd_info.csv`)
 
 This table stores details about the products offered.
 
@@ -49,15 +49,15 @@ This table stores details about the products offered.
 | `prd_start_dt`| DATE         | Date when the product became available.         |
 | `prd_end_dt`  | DATE         | Date when the product became unavailable (if applicable).|
 
-### ➡️ 3. Sales Details (`Sales details`)
+### ➡️ 3. Sales Details (`source_crm/sales_details.csv`)
 
 This table records individual sales transactions.
 
 | Column Name   | Data Type     | Description                                     |
 |---------------|---------------|-------------------------------------------------|
 | `sls_ord_num` | INT (Primary Key)| Unique identifier for each sales order.       |
-| `sls_prd_key` | VARCHAR(255) | Foreign Key referencing `Product Info` table.   |
-| `sls_cust_id` | INT         | Foreign Key referencing `Customer Info` table.  |
+| `sls_prd_key` | VARCHAR(255) | Foreign Key referencing the `Product Information` table.   |
+| `sls_cust_id` | INT         | Foreign Key referencing the `Customer Information` table.  |
 | `sls_order_dt`| DATE         | Date of the sales order.                        |
 | `sls_ship_dt` | DATE         | Date when the order was shipped.                |
 | `sls_due_dt`  | DATE         | Due date for the order.                         |
@@ -65,26 +65,26 @@ This table records individual sales transactions.
 | `sls_quantity`| INT         | Quantity of products sold in the order.         |
 | `sls_price`   | INT       | Price per unit of the product at the time of sale.|
 
-### ➡️ 4. Customer Extra Details (`Customer extra details`)
+### ➡️ 4. Customer Extra Details (`source_erp/CUST_AZ12.csv `)
 
 This table stores additional customer details.
 
 | Column Name | Data Type     | Description                                     |
 |-------------|---------------|-------------------------------------------------|
-| `CID`       | INT (Primary Key)| Foreign Key referencing `Customer Info` table.  |
+| `CID`       | INT (Primary Key)| Foreign Key referencing `Customer Information` table.  |
 | `BDATE`     | DATE         | Customer's birth date.                          |
 | `GEN`       | VARCHAR(10)  | Customer's gender (can be redundant with `cst_gndr`).|
 
-### ➡️ 5. Location (`Location Tables`)
+### ➡️ 5. Location (`source_erp/LOC_A101.csv`)
 
 This table stores customer location information.
 
 | Column Name | Data Type     | Description                                     |
 |-------------|---------------|-------------------------------------------------|
-| `CID`       | INT (Primary Key)| Foreign Key referencing `Customer Info` table.  |
+| `CID`       | INT (Primary Key)| Foreign Key referencing `Customer Information` table.  |
 | `CNTRY`     | VARCHAR(255) | Customer's country.                             |
 
-### ➡️ 6. Category (`Category Table`)
+### ➡️ 6. Category (`source_erp/PX_CAT_G1V2.csv`)
 
 This table categorizes products.
 
@@ -99,17 +99,17 @@ This table categorizes products.
 
 ##🪴  Relationships
 
-🔹 `Sales Details` has a foreign key `sls_prd_key` referencing `Product Info` (one-to-many).
+🔹 `Sales Details` has a foreign key `sls_prd_key` referencing its analog `prd_key` in the `Product Info` (one-to-many).
 
-🔹   `Sales Details` has a foreign key `sls_cust_id` referencing `Customer Info` (one-to-many).
+🔹  `Sales Details` has a foreign key `sls_cust_id` referencing its analog `cst_id` in the Customer Info` (one-to-many).
 
-🔹  `Customer Extra Details` has a foreign key `CID` referencing `Customer Info` (one-to-one).
+🔹  `Customer Extra Details` has a foreign key `CID` referencing its analog `cst_id` in the `Customer Info` (one-to-one).
 
-🔹  `Location` has a foreign key `CID` referencing `Customer Info` (one-to-one).
+🔹  `Location` has a foreign key `CID` referencing its analog `cst_id` in the `Customer Info` (one-to-one).
 
 ## 📟 Notes
 
-🔹  Consider using UUIDs for `cst_key` and `prd_key` for better scalability and distributed systems.
+🔹  Consider using universally unique identifiers (UUIDs) for `cst_key` and `prd_key` for better scalability and distributed systems.
 
 🔹   The `GEN` column in `Customer Extra Details` might be redundant if `cst_gndr` in `Customer Info` is already present.  Consider removing the redundant column.
   
