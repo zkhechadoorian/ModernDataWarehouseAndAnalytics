@@ -63,3 +63,14 @@ TRUNCATE TABLE gold.fact_sales, gold.dim_products, gold.dim_customers RESTART ID
 SELECT COUNT(*) AS customers_loaded FROM gold.dim_customers;
 SELECT COUNT(*) AS products_loaded FROM gold.dim_products;
 SELECT COUNT(*) AS sales_loaded FROM gold.fact_sales;
+
+-- Clean typos 
+UPDATE gold.dim_customers
+SET marital_status = 'Single'
+WHERE marital_status = 'Singel';
+
+-- Label all items with blank category as 'Uncategorized'
+UPDATE gold.dim_products
+SET category = 'Uncategorized'
+WHERE category IS NULL
+

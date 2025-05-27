@@ -376,14 +376,14 @@ psql -f report/2_eda_scripts/00_init_database.sql
 ```
 
 * Script Purpose:
-    - To explore the structure of the database, including the list of tables and their schemas. 
+    - To explore the structure of the database, including the list of tables, their column information, and relationships. It also prints a description of all three tables in the gold schema (the only schema). 
 
 * What this script prints to shell:
     - All User Tables
-    - INFORMATION_SCHEMA.TABLES 
     - INFORMATION_SCHEMA.COLUMNS
     - INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
     - INFORMATION_SCHEMA.SCHEMATA
+    - All table descriptions
 
 ``` bash 
 psql ${database_name}Analytics -f report/2_eda_scripts/01_database_exploration.sql

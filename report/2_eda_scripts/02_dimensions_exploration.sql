@@ -11,35 +11,18 @@ SQL Functions Used:
 ===============================================================================
 */
 
--- 1. Explore all distinct countries our customers come from.
+-- Explore all distinct countries and how many customers they contain
 SELECT
-    DISTINCT country
+    DISTINCT country,
+    COUNT(*) AS count
 FROM
-    gold.dim_customers;
-
--- 2. Explore all distinct categories, subcategories, and product names.
-
-SELECT
-    DISTINCT category
-FROM
-    gold.dim_products;
-
-SELECT
-    DISTINCT category,
-    subcategory,
-    product_name  
-FROM
-    gold.dim_products
+    gold.dim_customers
+GROUP BY 
+    country
 ORDER BY
-    category, subcategory, product_name
-LIMIT 10;
+    country ASC;
 
---3. Explore all distinct genders
-SELECT
-    DISTINCT gender
-FROM
-    gold.dim_customers;
-
+-- Explore all distinct genders and no. of customers per gender
 SELECT 
     gender,
     COUNT(*) AS count
@@ -50,12 +33,8 @@ GROUP BY
 ORDER BY 
     count DESC;
 
--- 4. Explore marital status
-SELECT 
-    DISTINCT marital_status
-FROM gold.dim_customers;
+-- Explore marital status and count the number of customers in each marital status
 
--- Count the number of each marital status
 SELECT
     marital_status,
     COUNT(*) AS count
@@ -65,6 +44,34 @@ GROUP BY
     marital_status
 ORDER BY
     count DESC;
+
+-- Explore all distinct categories, subcategories, and product names.
+SELECT
+    DISTINCT category,
+    COUNT(DISTINCT subcategory) AS no_subcategories,
+    COUNT(*) AS no_products
+FROM
+    gold.dim_products
+GROUP BY
+    category;
+
+SELECT
+  category,
+  string_agg(DISTINCT subcategory, ', ' ORDER BY subcategory) AS subcategories_list
+FROM
+  gold.dim_products
+GROUP BY
+  category;
+
+SELECT
+    DISTINCT category,
+    subcategory,
+    product_name  
+FROM
+    gold.dim_products
+ORDER BY
+    category, subcategory, product_name
+LIMIT 10;
 
 -- 5. Explore all distinct 'maintenance' values in dim_products
 SELECT

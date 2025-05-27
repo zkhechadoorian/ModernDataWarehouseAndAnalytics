@@ -50,10 +50,10 @@ FROM
 	INFORMATION_SCHEMA.SCHEMATA;
 
 -- Explore All Objects in the Database
-SELECT 
-	*
-FROM 
-	INFORMATION_SCHEMA.TABLES;
+-- SELECT 
+-- 	*
+-- FROM 
+-- 	INFORMATION_SCHEMA.TABLES;
 
 -- Describe dim_customers table
 \d gold.dim_customers
