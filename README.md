@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project addresses the challenge of transforming raw business data from multiple sources (ERP and CRM systems) into actionable business insights through a modern data warehouse solution. It provides a scalable, efficient, and analytics-ready architecture, integrating robust ETL pipelines, data modeling (Star Schema), Exploratory Data Analysis (EDA), and comprehensive SQL-based reporting.
+This project transforms raw business data from multiple sources (ERP and CRM systems) into actionable business insights through a modern data warehouse solution. It provides a scalable, efficient, and analytics-ready architecture, integrating robust ETL pipelines, data modeling (Star Schema), Exploratory Data Analysis (EDA), and comprehensive SQL-based reporting.
 
 ---
 
@@ -10,8 +10,6 @@ This project addresses the challenge of transforming raw business data from mult
 
 ```
 Modern-Data-Warehouse-Analytics-End-to-End-Project/
-│
-├── automation/                         # [Automation scripts and setup](automation/README.md)
 │
 ├── datasets/                           # [Datasets and details](datasets/README.md)
 │
