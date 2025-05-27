@@ -358,11 +358,13 @@ psql ${database_name} -f scripts/gold/ddl_gold.sql
 
 ### 6. Run EDA Scripts
 
+All EDA scripts used for SQL reporting are stored in the `report` folder. 
+
 ![alt text](docs/my_notes/eda_steps_analysis.svg)
 
 * Script Purpose:
     This script creates a new database named '${database_name}Analytics' if it doesn't already exist.
-    It then creates three schemas within the database: 'bronze', 'silver', and 'gold'.
+    It then creates one schema within the database called 'gold'.
 
 * WARNING:
     Running this script might require you to manually drop the database if it exists due to PostgreSQL's 
@@ -374,18 +376,21 @@ psql -f report/2_eda_scripts/00_init_database.sql
 ```
 
 * Script Purpose:
-    - To explore the structure of the database, including the list of tables and their schemas.
-* Table Used:
-    - INFORMATION_SCHEMA.TABLES
+    - To explore the structure of the database, including the list of tables and their schemas. 
+
+* What this script prints to shell:
+    - All User Tables
+    - INFORMATION_SCHEMA.TABLES 
     - INFORMATION_SCHEMA.COLUMNS
-    - To inspect the columns and metadata for specific tables.
+    - INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
+    - INFORMATION_SCHEMA.SCHEMATA
 
 ``` bash 
 psql ${database_name}Analytics -f report/2_eda_scripts/01_database_exploration.sql
 ```
 
 * Script Purpose:
-    - To explore the structure of dimension tables.
+    - To explore the structure of dimension tables. 
 
 SQL Functions Used:
     - DISTINCT
