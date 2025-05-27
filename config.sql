@@ -50,4 +50,4 @@ Variable Naming Convention:
 \set erp_px_cat_g1v2_path :project_dir '/datasets/source_erp/PX_CAT_G1V2.csv'
 
 -- Database connection settings (if needed)
-\set db_name 'datawarehouse'
+\set db_name 'zkhechadoorian'
