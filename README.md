@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project transforms raw business data from multiple sources (ERP and CRM systems) into actionable business insights through a modern data warehouse solution. It provides a scalable, efficient, and analytics-ready architecture, integrating robust ETL pipelines, data modeling (Star Schema), Exploratory Data Analysis (EDA), and comprehensive SQL-based reporting.
+This project converts raw business data from multiple sources—including ERP and CRM systems—into actionable insights through a modern data warehouse solution. The data encompasses sales transactions, customer profiles, and product information from a company specializing in bicycles and related accessories. The architecture is scalable and efficient, featuring robust ETL pipelines, star schema data modeling, exploratory data analysis (EDA), and comprehensive SQL-based reporting. Notably, the project provides insights into customer spending patterns by analyzing sales across various demographics and product categories, helping to identify opportunities for business growth.  
 
 ---
 
@@ -43,6 +43,8 @@ Modern-Data-Warehouse-Analytics-End-to-End-Project/
 ├── requirements.txt                    # Python dependencies
 └── config.sql                          # SQL configuration settings
 ```
+
+The project is structured into three main sections. The first section focuses on building the data warehouse by importing CRM and ERP data from CSV files into a relational database. Tables are designed based on the inferred business requirements derived from the raw data. Once the schema is in place, the data is loaded, cleaned, and prepared for exploratory data analysis (EDA). Advanced data analysis that can provide tangible business insights is performed after EDA.
 
 ![alt text](docs/my_notes/SQL_Projects.svg)
 
@@ -278,7 +280,7 @@ psql ${database_name} -f scripts/config_paths.sql
 ![alt text](image.png)
 * Script Purpose:
     This script creates tables in the 'bronze' schema, dropping existing tables 
-    if they already exist.
+    if they already exist. 
 	  Run this script to re-define the DDL structure of 'bronze' Tables
 ``` bash
 psql ${database_name} -f scripts/bronze/ddl_bronze.sql
@@ -389,40 +391,21 @@ psql -f report/2_eda_scripts/00_init_database.sql
 psql ${database_name}Analytics -f report/2_eda_scripts/01_database_exploration.sql
 ```
 
-Below is an example of the information printed to shell about the table `gold.fact_sales`. This step builds enough familiarity with the database to allow for dimensionality exploration in the next step. 
-
-``` bash
-                         Table "gold.fact_sales"
-    Column     |          Type          | Collation | Nullable | Default 
----------------+------------------------+-----------+----------+---------
- order_number  | character varying(255) |           |          | 
- product_key   | integer                |           |          | 
- customer_key  | integer                |           |          | 
- customer_id   | integer                |           |          | 
- order_date    | date                   |           |          | 
- shipping_date | date                   |           |          | 
- due_date      | date                   |           |          | 
- sales_amount  | numeric                |           |          | 
- quantity      | integer                |           |          | 
- price         | numeric                |           |          | 
-Foreign-key constraints:
-    "fact_sales_customer_key_fkey" FOREIGN KEY (customer_key) REFERENCES gold.dim_customers(customer_key)
-    "fact_sales_product_key_fkey" FOREIGN KEY (product_key) REFERENCES gold.dim_products(product_key)
-```
-
 * Script `02_dimensions_exploration` Purpose:
-    - To explore the structure of dimension tables. 
+    - To explore the structure of dimension tables. This script breaks down the data so that it is easy to view the number of distinct labels in certain columns. For example, it prints a list of countries and the number of customers that belong to each country. 
 
 SQL Functions Used:
     - DISTINCT
     - ORDER BY
+    - COUNT
+    - GROUP BY
+    - LIMIT
 
-Note: press `q` to quit the view. 
 ```bash
 psql ${database_name}Analytics -f report/2_eda_scripts/02_dimensions_exploration.sql
 ```
 
-* Script Purpose:
+* Script `03_date_range_exploration.sql` Purpose:
     - To determine the temporal boundaries of key data points.
     - To understand the range of historical data.
 
@@ -634,6 +617,58 @@ By following these steps, you can seamlessly integrate Python into your data pip
 
 ---
 
+## EDA Summary
+
+The EDA scripts begin by helping users familiarize themselves with the data. This is done by exploring the existing tables, their columns, and relationships (foreign keys). Below is one example of the information printed to the shell when running the script `2_eda_scripts/01_database_exploration`, which shows our star schema wherein the central data involve sales and the dimensional data involve customers and products.
+
+``` bash
+ table_schema |  table_name   
+--------------+---------------
+ gold         | dim_customers
+ gold         | dim_products
+ gold         | fact_sales
+```
+
+The script 2_eda_scripts/02_dimensions_exploration analyzes the dimension tables—customers and products—by printing key information, such as a list of unique product categories, the number of corresponding subcategories, and the number of products for sale.
+
+``` bash
+   category    | no_subcategories | no_products 
+---------------+------------------+-------------
+ Accessories   |               12 |          29
+ Bikes         |                3 |          97
+ Clothing      |                8 |          35
+ Components    |               13 |         127
+ Uncategorized |                0 |           7
+(5 rows)
+```
+
+The EDA becomes more complex the further one advances through the available scripts in `2_eda_scripts`. Users can begin gaining business insights by understanding which dimensional attributes are linked to higher revenue. For example, here is a breakdown of sales by category and year, as reported by `2_eda_scripts/04_measures_exploration.sql`. This report allows us to observe that bike sales are steadily growing, while clothing and accessories dropped in sale from 2013 to 2014. 
+
+```
+  category   | year | total_orders_by_category | total_sales_by_category 
+-------------+------+--------------------------+-------------------------
+ Accessories | 2012 |                       56 |                    2146
+ Accessories | 2013 |                    17375 |                  667166
+ Accessories | 2014 |                      774 |                   30332
+ Accessories |      |                       13 |                     353
+ Bikes       | 2010 |                       14 |                   43419
+ Bikes       | 2011 |                     2216 |                 7075088
+ Bikes       | 2012 |                     3269 |                 5839443
+ Bikes       | 2013 |                     9704 |                15353707
+ Bikes       |      |                        2 |                    4615
+ Clothing    | 2012 |                       20 |                     642
+ Clothing    | 2013 |                     7124 |                  323749
+ Clothing    | 2014 |                      316 |                   15310
+ Clothing    |      |                        1 |                      24
+ ```
+
+---
+## Actionable Insights
+Based on the SQL reports generated with with this data warehouse, some action items that could lead to potential business grown are:
+- Focusing sales on bikes rather than clothing and accessories.
+- Investigate the possibility of missing data. Star schema has no records of bikes sold in 2014, which either explains the drop in sales from 2013-2014 or indicates missing data.
+
+---
 ## 📖 Additional Documentation
 
 * **[Naming conventions](docs/warehouse/naming_conventions.md)**
