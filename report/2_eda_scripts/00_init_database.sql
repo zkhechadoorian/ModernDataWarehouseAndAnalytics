@@ -1,10 +1,10 @@
 -- Connect to postgres to drop and recreate the target DB
 \c postgres
 
-DROP DATABASE IF EXISTS "zkhechadoorianAnalytics";
-CREATE DATABASE "zkhechadoorianAnalytics";
+DROP DATABASE IF EXISTS "datawarehouseAnalytics";
+CREATE DATABASE "datawarehouseAnalytics";
 
-\c "zkhechadoorianAnalytics"
+\c "datawarehouseAnalytics"
 
 CREATE SCHEMA IF NOT EXISTS gold;
 
