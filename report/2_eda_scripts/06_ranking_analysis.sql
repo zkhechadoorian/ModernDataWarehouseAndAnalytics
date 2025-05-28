@@ -12,10 +12,6 @@ SQL Functions Used:
 ===============================================================================
 */
 
-\echo
-\echo Which 5 products generate the highest revenue? (Simple Ranking)
-\echo
-
 -- 1. Which 5 products generate the highest revenue? (Simple Ranking)
 SELECT
     p.product_name, 
@@ -29,10 +25,6 @@ GROUP BY p.product_name
 ORDER BY total_revenue DESC
 LIMIT 5;
 
-\echo
-\echo Complex but Flexible Ranking Using Window Functions (Top 5)
-\echo
-
 -- 2. Complex but Flexible Ranking Using Window Functions (Top 5)
 SELECT
     p.product_name, 
@@ -43,17 +35,14 @@ FROM
 LEFT JOIN gold.dim_products p
     ON f.product_key = p.product_key
 GROUP BY p.product_name
-ORDER BY rank_product DESC
-LIMIT 5;  
-
-\echo
-\echo What are the 5 worst-performing products in terms of sales?
-\echo
+ORDER BY rank_product ASC
+LIMIT 5;
 
 -- 3. What are the 5 worst-performing products in terms of sales?
 SELECT
-    p.product_name,  -- Corrected typo
-    SUM(f.sales_amount) AS total_revenue
+    p.product_name, 
+    SUM(f.sales_amount) AS total_revenue,
+    SUM(f.quantity) AS total_units_sold
 FROM 
     gold.fact_sales f
 LEFT JOIN gold.dim_products p
@@ -62,9 +51,18 @@ GROUP BY p.product_name
 ORDER BY total_revenue ASC  
 LIMIT 5;
 
-\echo
-\echo Find the top 10 customers who have generated the highest revenue
-\echo
+-- What are the worst-performing products in terms of units sold?
+SELECT
+    p.product_name,
+    SUM(f.sales_amount) AS total_revenue,
+    SUM(f.quantity) AS total_units_sold
+FROM 
+    gold.fact_sales f
+LEFT JOIN gold.dim_products p
+    ON f.product_key = p.product_key
+GROUP BY p.product_name
+ORDER BY total_units_sold ASC  
+LIMIT 5;
 
 -- 4. Find the top 10 customers who have generated the highest revenue
 SELECT 
@@ -83,10 +81,6 @@ ORDER BY
 LIMIT 
     10;
 
-\echo
-\echo The 3 customers with the fewest orders placed
-\echo
-
 -- 5. The 3 customers with the fewest orders placed
 SELECT
     c.customer_key,  -- Or c.customer_id
@@ -103,3 +97,26 @@ ORDER BY
     total_orders ASC  
 LIMIT 
     3;
+
+-- Rank countries based on total revenue per year
+SELECT
+    country,
+    year,
+    SUM(sales_amount) AS total_revenue
+FROM (
+    SELECT
+        c.country,
+        EXTRACT(YEAR FROM f.order_date) AS year,
+        f.sales_amount
+    FROM
+        gold.fact_sales f
+    RIGHT JOIN gold.dim_customers c
+        ON f.customer_key = c.customer_key
+    WHERE
+        f.order_date IS NOT NULL
+        AND c.country != 'Unknown'
+) AS sub
+GROUP BY
+    country, year
+ORDER BY
+    country DESC;

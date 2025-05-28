@@ -12,10 +12,10 @@ SQL Functions Used:
 ===============================================================================
 */
 
--- 1. Find total customers by country
+-- 1. Find total customers by country 
 SELECT
     country,
-    COUNT(customer_key) AS total_customers
+    COUNT(customer_key) AS total_customers,
 FROM 
     gold.dim_customers
 GROUP BY country  
@@ -51,10 +51,11 @@ ORDER BY avg_product_cost DESC;
 -- 5. What is the total revenue generated for each category?
 SELECT
     p.category,  
-    SUM(f.sales_amount) AS total_revenue  
+    SUM(f.sales_amount) AS total_revenue,
+    SUM(f.quantity) AS total_units_sold
 FROM 
     gold.fact_sales f
-LEFT JOIN gold.dim_products p
+RIGHT JOIN gold.dim_products p
     ON f.product_key = p.product_key
 GROUP BY p.category
 ORDER BY total_revenue DESC;
@@ -74,10 +75,10 @@ ORDER BY total_revenue DESC;
 -- 7. What is the distribution of sold items across countries?
 SELECT
     c.country,
-    SUM(f.quantity) AS total_quantity  
+    SUM(f.quantity) AS total_items_sold  
 FROM 
     gold.fact_sales f
 LEFT JOIN gold.dim_customers c
     ON f.customer_key = c.customer_key
 GROUP BY c.country
-ORDER BY total_quantity DESC;
+ORDER BY total_items_sold DESC;

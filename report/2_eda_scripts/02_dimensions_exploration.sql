@@ -55,6 +55,7 @@ FROM
 GROUP BY
     category;
 
+-- display each category with a list of its subcategories
 SELECT
   category,
   string_agg(DISTINCT subcategory, ', ' ORDER BY subcategory) AS subcategories_list

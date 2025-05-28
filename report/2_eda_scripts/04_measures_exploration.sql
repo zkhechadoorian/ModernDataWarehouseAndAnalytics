@@ -74,6 +74,24 @@ JOIN
 GROUP BY
     p.category;
 
+-- Find the total sales by product category broken down by year
+SELECT
+    p.category,
+    EXTRACT(YEAR FROM s.order_date) AS year,
+    COUNT(DISTINCT s.order_number) AS total_orders_by_category,
+    SUM(s.sales_amount) AS total_sales_by_category
+FROM
+    gold.dim_products p
+JOIN
+    gold.fact_sales s ON p.product_key = s.product_key
+GROUP BY
+    p.category,
+    EXTRACT(YEAR FROM s.order_date)
+ORDER BY
+    p.category,
+    year;
+
+
 -- Find total sales per gender
 SELECT
     c.gender,

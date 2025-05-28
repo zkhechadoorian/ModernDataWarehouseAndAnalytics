@@ -69,6 +69,10 @@ UPDATE gold.dim_customers
 SET marital_status = 'Single'
 WHERE marital_status = 'Singel';
 
+UPDATE gold.dim_customers
+SET country = 'Unknown'
+WHERE country = 'Unkown';
+
 -- Label all items with blank category as 'Uncategorized'
 UPDATE gold.dim_products
 SET category = 'Uncategorized'

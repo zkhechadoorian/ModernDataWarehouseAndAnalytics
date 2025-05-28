@@ -46,3 +46,10 @@ SELECT
     EXTRACT(YEAR FROM AGE(NOW(), MAX(birth_date))) AS youngest_age  -- Calculate the age of the youngest customer
 FROM
     gold.dim_customers;
+
+-- Find the range of product prices
+SELECT
+    MIN(p.product_cost) AS min_cost,
+    MAX(p.product_cost) AS max_cost
+FROM
+    gold.dim_products p;
